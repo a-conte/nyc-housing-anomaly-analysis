@@ -9,7 +9,7 @@ from housing.sources import SOURCES
 
 
 @pytest.fixture
-def audit_db(tmp_path):
+def audit_db(tmp_path, request):
     def building(key, lot, units, rooms="0"):
         return {
             "buildingid": str(key),
@@ -97,6 +97,12 @@ def audit_db(tmp_path):
         data["violations"].append(violation(100 + index, 8, date, "A"))
     # A conflicting geographic key must NOT move an event off its HPD BuildingID.
     data["complaints"][0]["bbl"] = "1000010012"
+    # A source PLUTO record with block 00000 is retained but cannot be joined.
+    data["pluto"].append(
+        {"bbl": "2000008900.00000000", "borocode": "2", "block": "0", "lot": "8900"}
+    )
+    if getattr(request, "param", None) == "duplicate_pluto_key":
+        data["pluto"].append(data["pluto"][0].copy())
     manifests = []
     for name, rows in data.items():
         source = SOURCES[name]

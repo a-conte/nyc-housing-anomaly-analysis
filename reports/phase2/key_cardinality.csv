@@ -1,0 +1,6 @@
+key_type,distinct_keys,records_with_key,shared_keys,records_on_shared_keys,max_records_per_key
+Active HPD BBL,334085,350991,5047,21953,248
+Active HPD BIN,349069,350190,774,1895,23
+HPD BBL,351561,379117,13865,41421,252
+HPD BIN,357940,362449,4005,8514,23
+PLUTO BBL,858283,858283,0,0,1

@@ -1,0 +1,3 @@
+candidate_multifamily,buildings,missing_year_built,built_since_study_start,denominator_with_unknown_construction,denominator_built_since_study_start
+False,228914,20633,1685,0,0
+True,152361,1063,1641,119,1310

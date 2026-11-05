@@ -1,0 +1,9 @@
+cohort_reason,buildings,with_denominator
+01 not active,26622,0
+02 not a current building,3661,0
+03 missing or invalid apartment count,662,0
+04 fewer than three apartments,191157,0
+05 missing or invalid Class B room count,4514,0
+06 Class B rooms present,680,0
+08 NYCHA,1618,0
+09 provisional multifamily candidate,152361,97663

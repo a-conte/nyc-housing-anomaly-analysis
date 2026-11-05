@@ -1,0 +1,665 @@
+{
+  "verified_at": "2026-11-05T17:49:25.730183+00:00",
+  "database": "data/housing.duckdb",
+  "database_bytes": 867708928,
+  "database_sha256": "77a9117185a756971420caa3b60285bd7ceb23bdbf37527eac5a34687ac11a2e",
+  "read_only_reopen": "passed",
+  "queries": {
+    "checks": "SELECT * FROM audit.checks ORDER BY severity, check_name",
+    "raw_counts": "SELECT 'complaints' AS source, count(*) AS rows FROM raw.complaints\n        UNION ALL SELECT 'violations', count(*) FROM raw.violations\n        UNION ALL SELECT 'buildings', count(*) FROM raw.buildings\n        UNION ALL SELECT 'pluto', count(*) FROM raw.pluto",
+    "pluto_versions": "SELECT pluto_version, count(*) AS lots FROM clean.pluto GROUP BY 1",
+    "annual": "SELECT year(event_month) AS year, count(*) AS problems,\n        count(DISTINCT complaint_id) AS complaints,\n        count(*) FILTER (WHERE duplicate_flag='Y') AS flagged_problems\n        FROM clean.complaints WHERE in_study GROUP BY 1 ORDER BY 1",
+    "linkage": "SELECT source, sum(rows) AS rows,\n        sum(building_unmatched) AS unmatched, sum(pluto_matched) AS pluto_matched,\n        sum(bbl_conflicts) AS bbl_conflicts, sum(bin_conflicts) AS bin_conflicts,\n        sum(source_bbl_conflicts) AS source_bbl_conflicts,\n        sum(component_bbl_conflicts) AS component_bbl_conflicts\n        FROM audit.linkage_summary WHERE in_study GROUP BY 1 ORDER BY 1",
+    "coverage": "SELECT source, count(*) AS months,\n        count(*) FILTER (WHERE rows=0) AS empty_months,\n        min(rows) AS min_monthly_rows, max(rows) AS max_monthly_rows,\n        min(year_over_year_ratio) AS min_yoy, max(year_over_year_ratio) AS max_yoy\n        FROM audit.monthly_coverage GROUP BY 1 ORDER BY 1",
+    "timing": "SELECT * FROM audit.violation_date_comparison ORDER BY extract_partition",
+    "dates": "SELECT * FROM audit.date_quality ORDER BY source, extract_partition",
+    "keys": "SELECT * FROM audit.key_cardinality ORDER BY key_type",
+    "cohort": "SELECT * FROM audit.cohort_exclusions ORDER BY cohort_reason",
+    "denominators": "SELECT borough_id, sum(candidate_buildings) AS candidates,\n        sum(with_denominator) AS retained,\n        round(100.0 * sum(with_denominator)/sum(candidate_buildings),2) AS retained_percent\n        FROM audit.denominator_selection GROUP BY 1 ORDER BY 1",
+    "denominators_by_size": "SELECT apartment_band, sum(candidate_buildings) AS candidates,\n        sum(with_denominator) AS retained,\n        round(100.0 * sum(with_denominator)/sum(candidate_buildings),2) AS retained_percent\n        FROM audit.denominator_selection GROUP BY 1 ORDER BY 1",
+    "outcomes": "SELECT cohort, sum(building_years) AS building_years,\n        sum(zero_complaint_and_bc_years) AS zero_complaint_and_bc_years,\n        sum(complaints) AS complaints, sum(problems) AS problems,\n        sum(hazardous) AS hazardous\n        FROM audit.outcome_selection GROUP BY 1 ORDER BY 1",
+    "severity": "SELECT violation_class, sum(rows) AS violations\n        FROM audit.violation_classes GROUP BY 1 ORDER BY 1",
+    "reconciliation": "SELECT * FROM audit.row_reconciliation ORDER BY source",
+    "annual_panel": "SELECT year, count(*) AS buildings, min(calendar_months) AS min_months,\n        max(calendar_months) AS max_months,\n        count(*) FILTER (WHERE NOT source_coverage_present) AS incomplete_source_years\n        FROM mart.building_year GROUP BY 1 ORDER BY 1",
+    "rolling_view": "SELECT count(*) AS months,\n        count(*) FILTER (WHERE complaints_12m IS NULL) AS incomplete_windows,\n        count(*) FILTER (WHERE months_in_window=12) AS full_windows\n        FROM mart.rolling_activity WHERE building_id=(SELECT min(building_id) FROM mart.buildings)",
+    "peer_view": "SELECT count(*) AS building_years, min(raw_hazardous_rank) AS minimum_raw_rank,\n        min(unit_rate_rank) AS minimum_rate_rank, min(peer_buildings) AS minimum_peer_size\n        FROM mart.peer_comparisons"
+  },
+  "results": {
+    "checks": [
+      {
+        "check_name": "building_join_does_not_multiply",
+        "severity": "error",
+        "failures": 0
+      },
+      {
+        "check_name": "building_year_panel_cardinality",
+        "severity": "error",
+        "failures": 0
+      },
+      {
+        "check_name": "cohort_exclusion_counts_reconcile",
+        "severity": "error",
+        "failures": 0
+      },
+      {
+        "check_name": "complaint_building_month_consistent",
+        "severity": "error",
+        "failures": 0
+      },
+      {
+        "check_name": "complaint_id_present",
+        "severity": "error",
+        "failures": 0
+      },
+      {
+        "check_name": "event_join_does_not_multiply",
+        "severity": "error",
+        "failures": 0
+      },
+      {
+        "check_name": "extract_year_matches_event_year",
+        "severity": "error",
+        "failures": 0
+      },
+      {
+        "check_name": "hazardous_equals_b_plus_c",
+        "severity": "error",
+        "failures": 0
+      },
+      {
+        "check_name": "invalid_primary_dates_in_annual_extracts",
+        "severity": "error",
+        "failures": 0
+      },
+      {
+        "check_name": "matched_panel_outcomes_reconcile",
+        "severity": "error",
+        "failures": 0
+      },
+      {
+        "check_name": "monthly_event_totals_reconcile",
+        "severity": "error",
+        "failures": 0
+      },
+      {
+        "check_name": "raw_clean_event_counts_preserved",
+        "severity": "error",
+        "failures": 0
+      },
+      {
+        "check_name": "undated_extract_has_no_dated_events",
+        "severity": "error",
+        "failures": 0
+      },
+      {
+        "check_name": "unique_building_ids",
+        "severity": "error",
+        "failures": 0
+      },
+      {
+        "check_name": "unique_pluto_bbls",
+        "severity": "error",
+        "failures": 0
+      },
+      {
+        "check_name": "unique_problem_ids",
+        "severity": "error",
+        "failures": 0
+      },
+      {
+        "check_name": "unique_violation_ids",
+        "severity": "error",
+        "failures": 0
+      },
+      {
+        "check_name": "all_calendar_months_have_records",
+        "severity": "warning",
+        "failures": 0
+      },
+      {
+        "check_name": "approval_before_inspection",
+        "severity": "warning",
+        "failures": 400
+      },
+      {
+        "check_name": "complaint_building_missing",
+        "severity": "warning",
+        "failures": 0
+      },
+      {
+        "check_name": "notice_before_inspection",
+        "severity": "warning",
+        "failures": 0
+      },
+      {
+        "check_name": "pluto_bbl_components_disagree",
+        "severity": "warning",
+        "failures": 0
+      },
+      {
+        "check_name": "pluto_bbl_missing_or_invalid",
+        "severity": "warning",
+        "failures": 1
+      },
+      {
+        "check_name": "substantial_monthly_change_review",
+        "severity": "warning",
+        "failures": 8
+      },
+      {
+        "check_name": "unrecognized_violation_class",
+        "severity": "warning",
+        "failures": 0
+      },
+      {
+        "check_name": "violation_building_missing",
+        "severity": "warning",
+        "failures": 0
+      }
+    ],
+    "raw_counts": [
+      {
+        "source": "complaints",
+        "rows": 3777889
+      },
+      {
+        "source": "violations",
+        "rows": 4422541
+      },
+      {
+        "source": "buildings",
+        "rows": 381275
+      },
+      {
+        "source": "pluto",
+        "rows": 858284
+      }
+    ],
+    "pluto_versions": [
+      {
+        "pluto_version": "26v2",
+        "lots": 858284
+      }
+    ],
+    "annual": [
+      {
+        "year": 2021,
+        "problems": 617503,
+        "complaints": 371078,
+        "flagged_problems": 89185
+      },
+      {
+        "year": 2022,
+        "problems": 733471,
+        "complaints": 461364,
+        "flagged_problems": 130307
+      },
+      {
+        "year": 2023,
+        "problems": 747466,
+        "complaints": 443881,
+        "flagged_problems": 101780
+      },
+      {
+        "year": 2024,
+        "problems": 823169,
+        "complaints": 491912,
+        "flagged_problems": 120950
+      },
+      {
+        "year": 2025,
+        "problems": 856280,
+        "complaints": 532962,
+        "flagged_problems": 149433
+      }
+    ],
+    "linkage": [
+      {
+        "source": "complaints",
+        "rows": 3777889,
+        "unmatched": 370,
+        "pluto_matched": 3755134,
+        "bbl_conflicts": 15023,
+        "bin_conflicts": 17988,
+        "source_bbl_conflicts": 13244,
+        "component_bbl_conflicts": 4433
+      },
+      {
+        "source": "violations",
+        "rows": 4422541,
+        "unmatched": 220,
+        "pluto_matched": 4402227,
+        "bbl_conflicts": 20324,
+        "bin_conflicts": 19956,
+        "source_bbl_conflicts": 20383,
+        "component_bbl_conflicts": 56
+      }
+    ],
+    "coverage": [
+      {
+        "source": "complaints",
+        "months": 60,
+        "empty_months": 0,
+        "min_monthly_rows": 35437,
+        "max_monthly_rows": 117276,
+        "min_yoy": 0.6704633407546845,
+        "max_yoy": 1.695968565815324
+      },
+      {
+        "source": "violations",
+        "months": 60,
+        "empty_months": 0,
+        "min_monthly_rows": 36870,
+        "max_monthly_rows": 214025,
+        "min_yoy": 0.2233243779932251,
+        "max_yoy": 3.646026579875237
+      }
+    ],
+    "timing": [
+      {
+        "extract_partition": "2021",
+        "violations": 768978,
+        "missing_approval_date": 0,
+        "missing_notice_date": 65921,
+        "approval_in_different_year": 7573,
+        "notice_in_different_year": 16462,
+        "median_days_to_approval": 1.0,
+        "median_days_to_notice": 2.0
+      },
+      {
+        "extract_partition": "2022",
+        "violations": 859409,
+        "missing_approval_date": 0,
+        "missing_notice_date": 147574,
+        "approval_in_different_year": 7153,
+        "notice_in_different_year": 14516,
+        "median_days_to_approval": 0.0,
+        "median_days_to_notice": 2.0
+      },
+      {
+        "extract_partition": "2023",
+        "violations": 880779,
+        "missing_approval_date": 0,
+        "missing_notice_date": 76746,
+        "approval_in_different_year": 9485,
+        "notice_in_different_year": 18111,
+        "median_days_to_approval": 0.0,
+        "median_days_to_notice": 2.0
+      },
+      {
+        "extract_partition": "2024",
+        "violations": 995422,
+        "missing_approval_date": 0,
+        "missing_notice_date": 65777,
+        "approval_in_different_year": 8076,
+        "notice_in_different_year": 12698,
+        "median_days_to_approval": 0.0,
+        "median_days_to_notice": 2.0
+      },
+      {
+        "extract_partition": "2025",
+        "violations": 917953,
+        "missing_approval_date": 0,
+        "missing_notice_date": 68676,
+        "approval_in_different_year": 6987,
+        "notice_in_different_year": 9928,
+        "median_days_to_approval": 0.0,
+        "median_days_to_notice": 2.0
+      }
+    ],
+    "dates": [
+      {
+        "source": "complaints",
+        "extract_partition": "2021",
+        "rows": 617503,
+        "missing_primary_date": 0,
+        "outside_window": 0,
+        "approval_before_inspection": 0,
+        "notice_before_inspection": 0
+      },
+      {
+        "source": "complaints",
+        "extract_partition": "2022",
+        "rows": 733471,
+        "missing_primary_date": 0,
+        "outside_window": 0,
+        "approval_before_inspection": 0,
+        "notice_before_inspection": 0
+      },
+      {
+        "source": "complaints",
+        "extract_partition": "2023",
+        "rows": 747466,
+        "missing_primary_date": 0,
+        "outside_window": 0,
+        "approval_before_inspection": 0,
+        "notice_before_inspection": 0
+      },
+      {
+        "source": "complaints",
+        "extract_partition": "2024",
+        "rows": 823169,
+        "missing_primary_date": 0,
+        "outside_window": 0,
+        "approval_before_inspection": 0,
+        "notice_before_inspection": 0
+      },
+      {
+        "source": "complaints",
+        "extract_partition": "2025",
+        "rows": 856280,
+        "missing_primary_date": 0,
+        "outside_window": 0,
+        "approval_before_inspection": 0,
+        "notice_before_inspection": 0
+      },
+      {
+        "source": "violations",
+        "extract_partition": "2021",
+        "rows": 768978,
+        "missing_primary_date": 0,
+        "outside_window": 0,
+        "approval_before_inspection": 0,
+        "notice_before_inspection": 0
+      },
+      {
+        "source": "violations",
+        "extract_partition": "2022",
+        "rows": 859409,
+        "missing_primary_date": 0,
+        "outside_window": 0,
+        "approval_before_inspection": 0,
+        "notice_before_inspection": 0
+      },
+      {
+        "source": "violations",
+        "extract_partition": "2023",
+        "rows": 880779,
+        "missing_primary_date": 0,
+        "outside_window": 0,
+        "approval_before_inspection": 0,
+        "notice_before_inspection": 0
+      },
+      {
+        "source": "violations",
+        "extract_partition": "2024",
+        "rows": 995422,
+        "missing_primary_date": 0,
+        "outside_window": 0,
+        "approval_before_inspection": 400,
+        "notice_before_inspection": 0
+      },
+      {
+        "source": "violations",
+        "extract_partition": "2025",
+        "rows": 917953,
+        "missing_primary_date": 0,
+        "outside_window": 0,
+        "approval_before_inspection": 0,
+        "notice_before_inspection": 0
+      }
+    ],
+    "keys": [
+      {
+        "key_type": "Active HPD BBL",
+        "distinct_keys": 334085,
+        "records_with_key": 350991,
+        "shared_keys": 5047,
+        "records_on_shared_keys": 21953,
+        "max_records_per_key": 248
+      },
+      {
+        "key_type": "Active HPD BIN",
+        "distinct_keys": 349069,
+        "records_with_key": 350190,
+        "shared_keys": 774,
+        "records_on_shared_keys": 1895,
+        "max_records_per_key": 23
+      },
+      {
+        "key_type": "HPD BBL",
+        "distinct_keys": 351561,
+        "records_with_key": 379117,
+        "shared_keys": 13865,
+        "records_on_shared_keys": 41421,
+        "max_records_per_key": 252
+      },
+      {
+        "key_type": "HPD BIN",
+        "distinct_keys": 357940,
+        "records_with_key": 362449,
+        "shared_keys": 4005,
+        "records_on_shared_keys": 8514,
+        "max_records_per_key": 23
+      },
+      {
+        "key_type": "PLUTO BBL",
+        "distinct_keys": 858283,
+        "records_with_key": 858283,
+        "shared_keys": 0,
+        "records_on_shared_keys": 0,
+        "max_records_per_key": 1
+      }
+    ],
+    "cohort": [
+      {
+        "cohort_reason": "01 not active",
+        "buildings": 26622,
+        "with_denominator": 0
+      },
+      {
+        "cohort_reason": "02 not a current building",
+        "buildings": 3661,
+        "with_denominator": 0
+      },
+      {
+        "cohort_reason": "03 missing or invalid apartment count",
+        "buildings": 662,
+        "with_denominator": 0
+      },
+      {
+        "cohort_reason": "04 fewer than three apartments",
+        "buildings": 191157,
+        "with_denominator": 0
+      },
+      {
+        "cohort_reason": "05 missing or invalid Class B room count",
+        "buildings": 4514,
+        "with_denominator": 0
+      },
+      {
+        "cohort_reason": "06 Class B rooms present",
+        "buildings": 680,
+        "with_denominator": 0
+      },
+      {
+        "cohort_reason": "08 NYCHA",
+        "buildings": 1618,
+        "with_denominator": 0
+      },
+      {
+        "cohort_reason": "09 provisional multifamily candidate",
+        "buildings": 152361,
+        "with_denominator": 97663
+      }
+    ],
+    "denominators": [
+      {
+        "borough_id": 1,
+        "candidates": 26426,
+        "retained": 13778,
+        "retained_percent": 52.14
+      },
+      {
+        "borough_id": 2,
+        "candidates": 20884,
+        "retained": 13369,
+        "retained_percent": 64.02
+      },
+      {
+        "borough_id": 3,
+        "candidates": 70575,
+        "retained": 49174,
+        "retained_percent": 69.68
+      },
+      {
+        "borough_id": 4,
+        "candidates": 33047,
+        "retained": 20859,
+        "retained_percent": 63.12
+      },
+      {
+        "borough_id": 5,
+        "candidates": 1429,
+        "retained": 483,
+        "retained_percent": 33.8
+      }
+    ],
+    "denominators_by_size": [
+      {
+        "apartment_band": "10-49",
+        "candidates": 29561,
+        "retained": 17449,
+        "retained_percent": 59.03
+      },
+      {
+        "apartment_band": "3-9",
+        "candidates": 111260,
+        "retained": 75340,
+        "retained_percent": 67.72
+      },
+      {
+        "apartment_band": "50+",
+        "candidates": 11540,
+        "retained": 4874,
+        "retained_percent": 42.24
+      }
+    ],
+    "outcomes": [
+      {
+        "cohort": "candidate: denominator withheld",
+        "building_years": 273490,
+        "zero_complaint_and_bc_years": 190772,
+        "complaints": 926243,
+        "problems": 1474561,
+        "hazardous": 1115613
+      },
+      {
+        "cohort": "candidate: predates construction",
+        "building_years": 1926,
+        "zero_complaint_and_bc_years": 1916,
+        "complaints": 15,
+        "problems": 16,
+        "hazardous": 1
+      },
+      {
+        "cohort": "not a candidate",
+        "building_years": 1144570,
+        "zero_complaint_and_bc_years": 1054127,
+        "complaints": 257221,
+        "problems": 451748,
+        "hazardous": 241922
+      },
+      {
+        "cohort": "provisional rate cohort",
+        "building_years": 486389,
+        "zero_complaint_and_bc_years": 360488,
+        "complaints": 1117439,
+        "problems": 1851194,
+        "hazardous": 1500601
+      }
+    ],
+    "severity": [
+      {
+        "violation_class": "A",
+        "violations": 1140316
+      },
+      {
+        "violation_class": "B",
+        "violations": 1653257
+      },
+      {
+        "violation_class": "C",
+        "violations": 1205026
+      },
+      {
+        "violation_class": "I",
+        "violations": 423942
+      }
+    ],
+    "reconciliation": [
+      {
+        "source": "complaints",
+        "raw_rows": 3777889,
+        "clean_rows": 3777889,
+        "study_rows": 3777889,
+        "aggregated_study_rows": 3777889,
+        "panel_measure": "problems",
+        "matched_panel_events": 3777519,
+        "panel_events": 3777519
+      },
+      {
+        "source": "violations",
+        "raw_rows": 4422541,
+        "clean_rows": 4422541,
+        "study_rows": 4422541,
+        "aggregated_study_rows": 4422541,
+        "panel_measure": "Class B/C violations",
+        "matched_panel_events": 2858137,
+        "panel_events": 2858137
+      }
+    ],
+    "annual_panel": [
+      {
+        "year": 2021,
+        "buildings": 381275,
+        "min_months": 12,
+        "max_months": 12,
+        "incomplete_source_years": 0
+      },
+      {
+        "year": 2022,
+        "buildings": 381275,
+        "min_months": 12,
+        "max_months": 12,
+        "incomplete_source_years": 0
+      },
+      {
+        "year": 2023,
+        "buildings": 381275,
+        "min_months": 12,
+        "max_months": 12,
+        "incomplete_source_years": 0
+      },
+      {
+        "year": 2024,
+        "buildings": 381275,
+        "min_months": 12,
+        "max_months": 12,
+        "incomplete_source_years": 0
+      },
+      {
+        "year": 2025,
+        "buildings": 381275,
+        "min_months": 12,
+        "max_months": 12,
+        "incomplete_source_years": 0
+      }
+    ],
+    "rolling_view": [
+      {
+        "months": 60,
+        "incomplete_windows": 11,
+        "full_windows": 49
+      }
+    ],
+    "peer_view": [
+      {
+        "building_years": 486389,
+        "minimum_raw_rank": 1,
+        "minimum_rate_rank": 1,
+        "minimum_peer_size": 1
+      }
+    ]
+  }
+}

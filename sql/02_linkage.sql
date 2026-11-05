@@ -15,6 +15,7 @@ WITH lot_counts AS (
                AS unit_counts_comparable,
            coalesce(b.record_status = 'ACTIVE' AND b.lifecycle = 'BUILDING'
                     AND b.hpd_units >= 3 AND b.hpd_class_b_rooms = 0
+                    AND b.management_program <> ''
                     AND b.management_program <> 'NYCHA', false) AS candidate_multifamily
     FROM clean.buildings b
     LEFT JOIN clean.pluto p USING (bbl)
@@ -51,7 +52,9 @@ SELECT 'complaints' AS source, c.problem_id AS event_id, c.building_id, c.event_
        CASE WHEN c.reported_bin IS NOT NULL AND b.bin IS NOT NULL
             THEN c.reported_bin <> b.bin END AS bin_conflict,
        CASE WHEN c.reported_bbl IS NOT NULL AND c.component_bbl IS NOT NULL
-            THEN c.reported_bbl <> c.component_bbl END AS source_bbl_conflict
+            THEN c.reported_bbl <> c.component_bbl END AS source_bbl_conflict,
+       CASE WHEN c.component_bbl IS NOT NULL AND b.bbl IS NOT NULL
+            THEN c.component_bbl <> b.bbl END AS component_bbl_conflict
 FROM clean.complaints c LEFT JOIN mart.buildings b USING (building_id)
 UNION ALL
 SELECT 'violations', v.violation_id, v.building_id, v.event_month, v.in_study,
@@ -61,6 +64,8 @@ SELECT 'violations', v.violation_id, v.building_id, v.event_month, v.in_study,
        CASE WHEN v.reported_bin IS NOT NULL AND b.bin IS NOT NULL
             THEN v.reported_bin <> b.bin END,
        CASE WHEN v.reported_bbl IS NOT NULL AND v.component_bbl IS NOT NULL
-            THEN v.reported_bbl <> v.component_bbl END
+            THEN v.reported_bbl <> v.component_bbl END,
+       CASE WHEN v.component_bbl IS NOT NULL AND b.bbl IS NOT NULL
+            THEN v.component_bbl <> b.bbl END
 FROM clean.violations v LEFT JOIN mart.buildings b USING (building_id);
 

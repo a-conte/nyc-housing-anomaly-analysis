@@ -1,0 +1,11 @@
+source,extract_partition,rows,missing_primary_date,outside_window,approval_before_inspection,notice_before_inspection
+complaints,2021,617503,0,0,0,0
+complaints,2022,733471,0,0,0,0
+complaints,2023,747466,0,0,0,0
+complaints,2024,823169,0,0,0,0
+complaints,2025,856280,0,0,0,0
+violations,2021,768978,0,0,0,0
+violations,2022,859409,0,0,0,0
+violations,2023,880779,0,0,0,0
+violations,2024,995422,0,0,400,0
+violations,2025,917953,0,0,0,0

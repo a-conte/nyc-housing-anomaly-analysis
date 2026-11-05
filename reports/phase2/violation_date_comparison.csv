@@ -1,0 +1,6 @@
+extract_partition,violations,missing_approval_date,missing_notice_date,approval_in_different_year,notice_in_different_year,median_days_to_approval,median_days_to_notice
+2021,768978,0,65921,7573,16462,1.0,2.0
+2022,859409,0,147574,7153,14516,0.0,2.0
+2023,880779,0,76746,9485,18111,0.0,2.0
+2024,995422,0,65777,8076,12698,0.0,2.0
+2025,917953,0,68676,6987,9928,0.0,2.0

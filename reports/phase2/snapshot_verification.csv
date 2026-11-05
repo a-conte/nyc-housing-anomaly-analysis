@@ -1,0 +1,15 @@
+source,partition,expected_rows,loaded_rows
+buildings,all,381275,381275
+complaints,2021,617503,617503
+complaints,2022,733471,733471
+complaints,2023,747466,747466
+complaints,2024,823169,823169
+complaints,2025,856280,856280
+complaints,undated,0,0
+pluto,all,858284,858284
+violations,2021,768978,768978
+violations,2022,859409,859409
+violations,2023,880779,880779
+violations,2024,995422,995422
+violations,2025,917953,917953
+violations,undated,0,0

@@ -7,9 +7,11 @@ This project is a concise data-science portfolio sample designed to demonstrate 
 substantive SQL, data-quality judgment, and interpretable statistical analysis. A recorded
 anomaly is a lead for investigation, not a finding of misconduct.
 
-**Current phase: ETL, data validation, linkage auditing, and DuckDB loading.** The approved
-[analytical design](docs/analytical_design.md) sets the scope. Modeling and the final analytical
-notebooks follow this phase's evidence.
+**Phase 2 completed November 5, 2026: snapshot verification, DuckDB loading, and data-quality auditing.**
+Read the [Phase 2 findings and unresolved decisions](reports/phase2/QUALITY_REVIEW.md) and
+[generated audit](reports/phase2/README.md). All 17 blocking integrity checks pass.
+The approved [analytical design](docs/analytical_design.md) sets the scope. Phase 3 has not started;
+cohort and denominator decisions remain open.
 
 ## Reproduce Phase 2
 
@@ -18,8 +20,8 @@ Requires Python 3.11+ and [uv](https://docs.astral.sh/uv/). Run commands from th
 ```bash
 uv sync --locked
 uv run python -m housing run
-uv run pytest -q
-uv run ruff check housing tests
+uv run python -m pytest -q
+uv run python -m ruff check housing tests
 ```
 
 The first run downloads the four public sources and creates `data/housing.duckdb` plus
@@ -68,6 +70,7 @@ Apartment identifiers, tenant information, and contact names are not requested b
 | [sql/02_linkage.sql](sql/02_linkage.sql) | Building/lot cardinality, geographic conflicts, explicit denominator comparison |
 | [sql/03_metrics.sql](sql/03_metrics.sql) | Distinct event aggregation, zero-event inventory, temporal panels, rolling windows, peer comparisons, ranks |
 | [sql/04_audits.sql](sql/04_audits.sql) | Monthly coverage, date quality, join failures, units, severity, and analytical invariants |
+| [sql/05_quality.sql](sql/05_quality.sql) | Event conservation, key cardinality, cohort exclusions, denominator selection, and construction exposure |
 | [tests/](tests/) | Synthetic edge cases for fan-out, distinct complaints, missing links, denominators, rolling boundaries, pagination, and corruption |
 
 Python handles acquisition and orchestration. SQL performs the meaningful transformations.

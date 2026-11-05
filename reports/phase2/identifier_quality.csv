@@ -1,0 +1,11 @@
+source,extract_partition,rows,invalid_primary_ids,missing_building_ids,missing_reported_bbls,missing_component_bbls,missing_bins
+complaints,2021,617503,0,0,2897,3,3620
+complaints,2022,733471,0,0,3041,12,3781
+complaints,2023,747466,0,0,2755,5,4053
+complaints,2024,823169,0,0,3238,2,5832
+complaints,2025,856280,0,0,2368,1,4654
+violations,2021,768978,0,0,797,0,1854
+violations,2022,859409,0,0,1036,0,2428
+violations,2023,880779,0,0,1068,0,2356
+violations,2024,995422,0,0,1035,0,2964
+violations,2025,917953,0,0,811,0,2350

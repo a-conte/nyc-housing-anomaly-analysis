@@ -1,0 +1,23 @@
+Phase 2 final validation: 2026-11-05T17:55:22.349822+00:00
+
+$ .venv/bin/python -m pytest -q
+.........................                                                [100%]
+25 passed in 0.85s
+exit_code=0
+
+$ .venv/bin/python -m ruff check housing tests
+All checks passed!
+exit_code=0
+
+$ .venv/bin/python -m ruff format --check housing tests
+9 files already formatted
+exit_code=0
+
+$ git diff --check
+docs/analytical_design.md:7: trailing whitespace.
++exposure decisions. Phase 3 has not started.  
+exit_code=2
+
+After removing Markdown trailing whitespace:
+$ git diff --check
+exit_code=0

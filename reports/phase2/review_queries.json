@@ -1,0 +1,194 @@
+{
+  "queries": {
+    "flagged_months": "WITH classes AS (\n SELECT event_month, count(*) FILTER (WHERE violation_class='A') class_a,\n count(*) FILTER (WHERE violation_class='I') class_i,\n count(*) FILTER (WHERE violation_class IN ('B','C')) hazardous\n FROM clean.violations WHERE in_study GROUP BY event_month\n), compared AS (\n SELECT m.*, class_a, class_i, hazardous, lag(hazardous,12) OVER (ORDER BY event_month) bc_prior_year\n FROM audit.monthly_coverage m JOIN classes USING (event_month) WHERE source='violations'\n) SELECT event_month, rows, rows_prior_year, round(year_over_year_ratio,3) AS total_ratio,\n class_a, class_i, hazardous, bc_prior_year,\n round(hazardous::DOUBLE/bc_prior_year,3) AS bc_ratio FROM compared\n WHERE year_over_year_ratio < 0.5 OR year_over_year_ratio > 2 ORDER BY event_month",
+    "notice_missing_by_class": "SELECT violation_class, count(*) n FROM clean.violations WHERE notice_issued_at IS NULL GROUP BY 1 ORDER BY 1",
+    "approval_dates": "SELECT inspected_at::DATE AS inspection_date, approved_at::DATE AS approval_date, count(*) n FROM clean.violations WHERE approved_at < inspected_at GROUP BY 1,2 ORDER BY n DESC LIMIT 10",
+    "candidate_bin_overlap": "WITH shared AS (SELECT bin FROM clean.buildings WHERE record_status='ACTIVE' AND lifecycle='BUILDING' AND bin IS NOT NULL GROUP BY bin HAVING count(*)>1)\nSELECT count(*) AS candidates, count(rate_units) AS with_denominator FROM mart.buildings WHERE candidate_multifamily AND bin IN (SELECT bin FROM shared)",
+    "category_missingness": "SELECT year, sum(problems) AS problems, sum(problems) FILTER (WHERE major_category IS NULL OR major_category='') AS missing_category, sum(unknown_duplicate_flag) AS unknown_duplicate_flag FROM audit.complaint_categories GROUP BY year ORDER BY year"
+  },
+  "results": {
+    "flagged_months": [
+      {
+        "event_month": "2022-02-01",
+        "rows": 134429,
+        "rows_prior_year": 36870,
+        "total_ratio": 3.646,
+        "class_a": 66682,
+        "class_i": 26656,
+        "hazardous": 41091,
+        "bc_prior_year": 28800,
+        "bc_ratio": 1.427
+      },
+      {
+        "event_month": "2022-03-01",
+        "rows": 141581,
+        "rows_prior_year": 53050,
+        "total_ratio": 2.669,
+        "class_a": 58827,
+        "class_i": 38563,
+        "hazardous": 44191,
+        "bc_prior_year": 40320,
+        "bc_ratio": 1.096
+      },
+      {
+        "event_month": "2022-04-01",
+        "rows": 47797,
+        "rows_prior_year": 214025,
+        "total_ratio": 0.223,
+        "class_a": 10567,
+        "class_i": 263,
+        "hazardous": 36967,
+        "bc_prior_year": 35917,
+        "bc_ratio": 1.029
+      },
+      {
+        "event_month": "2022-11-01",
+        "rows": 127822,
+        "rows_prior_year": 48102,
+        "total_ratio": 2.657,
+        "class_a": 9170,
+        "class_i": 79673,
+        "hazardous": 38979,
+        "bc_prior_year": 37377,
+        "bc_ratio": 1.043
+      },
+      {
+        "event_month": "2023-02-01",
+        "rows": 52386,
+        "rows_prior_year": 134429,
+        "total_ratio": 0.39,
+        "class_a": 9648,
+        "class_i": 262,
+        "hazardous": 42476,
+        "bc_prior_year": 41091,
+        "bc_ratio": 1.034
+      },
+      {
+        "event_month": "2024-03-01",
+        "rows": 72093,
+        "rows_prior_year": 146578,
+        "total_ratio": 0.492,
+        "class_a": 12840,
+        "class_i": 300,
+        "hazardous": 58953,
+        "bc_prior_year": 44782,
+        "bc_ratio": 1.316
+      },
+      {
+        "event_month": "2024-04-01",
+        "rows": 149971,
+        "rows_prior_year": 50764,
+        "total_ratio": 2.954,
+        "class_a": 91789,
+        "class_i": 156,
+        "hazardous": 58026,
+        "bc_prior_year": 40070,
+        "bc_ratio": 1.448
+      },
+      {
+        "event_month": "2025-04-01",
+        "rows": 64745,
+        "rows_prior_year": 149971,
+        "total_ratio": 0.432,
+        "class_a": 11427,
+        "class_i": 223,
+        "hazardous": 53095,
+        "bc_prior_year": 58026,
+        "bc_ratio": 0.915
+      }
+    ],
+    "notice_missing_by_class": [
+      {
+        "violation_class": "A",
+        "n": 250
+      },
+      {
+        "violation_class": "B",
+        "n": 189
+      },
+      {
+        "violation_class": "C",
+        "n": 313
+      },
+      {
+        "violation_class": "I",
+        "n": 423942
+      }
+    ],
+    "approval_dates": [
+      {
+        "inspection_date": "2024-11-19",
+        "approval_date": "2024-11-18",
+        "n": 114
+      },
+      {
+        "inspection_date": "2024-11-16",
+        "approval_date": "2024-11-15",
+        "n": 112
+      },
+      {
+        "inspection_date": "2024-11-21",
+        "approval_date": "2024-11-20",
+        "n": 70
+      },
+      {
+        "inspection_date": "2024-11-14",
+        "approval_date": "2024-11-13",
+        "n": 44
+      },
+      {
+        "inspection_date": "2024-11-20",
+        "approval_date": "2024-11-19",
+        "n": 31
+      },
+      {
+        "inspection_date": "2024-11-15",
+        "approval_date": "2024-11-14",
+        "n": 27
+      },
+      {
+        "inspection_date": "2024-11-17",
+        "approval_date": "2024-11-16",
+        "n": 2
+      }
+    ],
+    "candidate_bin_overlap": [
+      {
+        "candidates": 917,
+        "with_denominator": 146
+      }
+    ],
+    "category_missingness": [
+      {
+        "year": 2021,
+        "problems": 617503,
+        "missing_category": null,
+        "unknown_duplicate_flag": 0
+      },
+      {
+        "year": 2022,
+        "problems": 733471,
+        "missing_category": null,
+        "unknown_duplicate_flag": 0
+      },
+      {
+        "year": 2023,
+        "problems": 747466,
+        "missing_category": null,
+        "unknown_duplicate_flag": 0
+      },
+      {
+        "year": 2024,
+        "problems": 823169,
+        "missing_category": null,
+        "unknown_duplicate_flag": 0
+      },
+      {
+        "year": 2025,
+        "problems": 856280,
+        "missing_category": null,
+        "unknown_duplicate_flag": 0
+      }
+    ]
+  }
+}

@@ -1,0 +1,3 @@
+source,raw_rows,clean_rows,study_rows,aggregated_study_rows,panel_measure,matched_panel_events,panel_events
+complaints,3777889,3777889,3777889,3777889,problems,3777519,3777519
+violations,4422541,4422541,4422541,4422541,Class B/C violations,2858137,2858137

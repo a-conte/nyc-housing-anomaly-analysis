@@ -1,3 +1,6 @@
+import pytest
+
+
 def test_counts_do_not_multiply_and_severity_stays_separate(audit_db):
     row = audit_db.execute("""
         SELECT complaints, problems, class_b, class_c, hazardous
@@ -79,6 +82,47 @@ def test_semantic_checks_pass_on_valid_fixture(audit_db):
         ).fetchall()
         == []
     )
+
+
+def test_audit_conserves_events_and_explains_cohort_exclusions(audit_db):
+    assert audit_db.execute("""
+        SELECT source, raw_rows, clean_rows, study_rows, aggregated_study_rows,
+               panel_measure, matched_panel_events, panel_events
+        FROM audit.row_reconciliation ORDER BY source
+    """).fetchall() == [
+        ("complaints", 30, 30, 29, 29, "problems", 28, 28),
+        ("violations", 30, 30, 29, 29, "Class B/C violations", 3, 3),
+    ]
+    assert audit_db.execute("""
+        SELECT cohort_reason, buildings FROM audit.cohort_exclusions ORDER BY cohort_reason
+    """).fetchall() == [
+        ("04 fewer than three apartments", 1),
+        ("06 Class B rooms present", 1),
+        ("09 provisional multifamily candidate", 6),
+    ]
+
+
+def test_invalid_pluto_bbl_is_retained_and_cannot_supply_a_denominator(audit_db):
+    assert audit_db.execute("SELECT count(*) FROM raw.pluto").fetchone() == (7,)
+    assert audit_db.execute("SELECT count(*) FROM clean.pluto").fetchone() == (7,)
+    assert audit_db.execute("SELECT count(*) FROM audit.pluto_unjoinable").fetchone() == (1,)
+    assert audit_db.execute("""
+        SELECT severity, failures FROM audit.checks
+        WHERE check_name='pluto_bbl_missing_or_invalid'
+    """).fetchone() == ("warning", 1)
+    assert audit_db.execute("""
+        SELECT failures FROM audit.checks WHERE check_name='unique_pluto_bbls'
+    """).fetchone() == (0,)
+
+
+@pytest.mark.parametrize("audit_db", ["duplicate_pluto_key"], indirect=True)
+def test_duplicate_joinable_pluto_keys_still_block_publication(audit_db):
+    assert audit_db.execute("""
+        SELECT severity, failures FROM audit.checks WHERE check_name='unique_pluto_bbls'
+    """).fetchone() == ("error", 1)
+    assert audit_db.execute("""
+        SELECT failures FROM audit.checks WHERE check_name='building_join_does_not_multiply'
+    """).fetchone() == (1,)
 
 
 def test_absent_source_month_is_not_a_zero_or_a_full_rolling_window(audit_db):

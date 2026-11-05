@@ -28,7 +28,8 @@ SELECT source, year(event_month) AS year, in_study, count(*) AS rows,
        count(*) FILTER (WHERE pluto_matched) AS pluto_matched,
        count(*) FILTER (WHERE bbl_conflict) AS bbl_conflicts,
        count(*) FILTER (WHERE bin_conflict) AS bin_conflicts,
-       count(*) FILTER (WHERE source_bbl_conflict) AS source_bbl_conflicts
+       count(*) FILTER (WHERE source_bbl_conflict) AS source_bbl_conflicts,
+       count(*) FILTER (WHERE component_bbl_conflict) AS component_bbl_conflicts
 FROM audit.event_links GROUP BY source, year(event_month), in_study;
 
 CREATE TABLE audit.unit_comparison AS
@@ -70,7 +71,11 @@ HAVING count(DISTINCT coalesce(building_id, 'MISSING')) > 1 OR count(DISTINCT ev
 CREATE TABLE audit.checks AS
 SELECT 'unique_building_ids' AS check_name, 'error' AS severity,
        count(*) - count(DISTINCT building_id) AS failures FROM clean.buildings
-UNION ALL SELECT 'unique_pluto_bbls', 'error', count(*) - count(DISTINCT bbl) FROM clean.pluto
+-- A NULL PLUTO key cannot join or fan out. Preserve it and warn separately.
+-- Duplicate non-NULL keys still block publication.
+UNION ALL SELECT 'unique_pluto_bbls', 'error', count(bbl) - count(DISTINCT bbl) FROM clean.pluto
+UNION ALL SELECT 'pluto_bbl_missing_or_invalid', 'warning', count(*) FROM clean.pluto
+          WHERE bbl IS NULL
 UNION ALL SELECT 'unique_problem_ids', 'error', count(*) - count(DISTINCT problem_id) FROM clean.complaints
 UNION ALL SELECT 'unique_violation_ids', 'error', count(*) - count(DISTINCT violation_id) FROM clean.violations
 UNION ALL SELECT 'complaint_id_present', 'error', count(*) FROM clean.complaints
@@ -98,4 +103,8 @@ UNION ALL SELECT 'invalid_primary_dates_in_annual_extracts', 'error', count(*)
 UNION ALL SELECT 'pluto_bbl_components_disagree', 'warning', count(*) FROM clean.pluto
           WHERE bbl <> component_bbl
 UNION ALL SELECT 'substantial_monthly_change_review', 'warning', count(*) FROM audit.monthly_coverage
-          WHERE year_over_year_ratio < 0.5 OR year_over_year_ratio > 2;
+          WHERE year_over_year_ratio < 0.5 OR year_over_year_ratio > 2
+UNION ALL SELECT 'approval_before_inspection', 'warning', sum(approval_before_inspection)
+          FROM audit.date_quality
+UNION ALL SELECT 'notice_before_inspection', 'warning', sum(notice_before_inspection)
+          FROM audit.date_quality;
