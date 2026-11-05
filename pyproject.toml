@@ -1,0 +1,17 @@
+[project]
+name = "nyc-housing-data"
+version = "0.1.0"
+description = "An interpretable investigation of NYC housing complaints and violations"
+requires-python = ">=3.11"
+dependencies = ["duckdb>=1.4,<2", "requests>=2.32,<3"]
+
+[dependency-groups]
+dev = ["pytest>=8,<10", "ruff>=0.12,<1"]
+
+[tool.pytest.ini_options]
+pythonpath = ["."]
+testpaths = ["tests"]
+
+[tool.ruff]
+line-length = 100
+

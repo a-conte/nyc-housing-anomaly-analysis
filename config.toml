@@ -1,0 +1,15 @@
+# Provisional extraction window, not an assertion of analytical coverage.
+[study]
+start_year = 2021
+end_year = 2025
+
+[download]
+page_size = 50000
+workers = 3
+timeout_seconds = 120
+attempts = 4
+
+[database]
+memory_limit = "4GB"
+threads = 4
+
