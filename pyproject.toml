@@ -3,7 +3,15 @@ name = "nyc-housing-data"
 version = "0.1.0"
 description = "An interpretable investigation of NYC housing complaints and violations"
 requires-python = ">=3.11"
-dependencies = ["duckdb>=1.4,<2", "requests>=2.32,<3"]
+dependencies = [
+    "duckdb>=1.4,<2",
+    "matplotlib>=3.10,<4",
+    "numpy>=2,<3",
+    "pandas>=2,<3",
+    "requests>=2.32,<3",
+    "scipy>=1.15,<2",
+    "statsmodels>=0.14,<0.15",
+]
 
 [dependency-groups]
 dev = ["pytest>=8,<10", "ruff>=0.12,<1"]

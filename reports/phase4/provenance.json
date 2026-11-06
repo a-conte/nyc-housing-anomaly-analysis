@@ -1,0 +1,29 @@
+{
+  "generated_at": "2026-11-06T19:12:46.501873+00:00",
+  "python": "3.14.0",
+  "numpy": "2.5.4",
+  "scipy": "1.18.1",
+  "statsmodels": "0.14.6",
+  "sql": "SELECT a.building_id,a.year,a.complaints,a.class_b,a.class_c,a.hazardous,\n a.calendar_months,a.source_coverage_present,f.selected_units,f.pluto_units,\n f.unit_counts_comparable,f.agreement_sensitivity,f.year_built,f.borough_id,\n f.building_class,f.bbl\n FROM analytical.annual a JOIN analytical.features f USING(building_id)\n ORDER BY a.building_id,a.year",
+  "input_sha256": "7f80c3e2602cb9237b356ce3c4286a9b3e2203683140689fa1882d6dc7e3cacd",
+  "code_sha256": "a8ac60b3950a7ba965e30158e18fa42d0cab9bfc40e77f64f6e9e5f03dc6515b",
+  "report_code_sha256": "e83027f092ae454931285e671a2f23800e432369778f66c3126e27de9ffe20c5",
+  "lock_sha256": "0e780052c77768b100668c3100ca8a5ce0b5701b7da6c0160ef6d21c61f05693",
+  "training_years": [
+    2021,
+    2022,
+    2023,
+    2024
+  ],
+  "evaluation_year": 2025,
+  "predictors": [
+    "intercept",
+    "log_units",
+    "age_centuries",
+    "year_trend",
+    "Bronx",
+    "Brooklyn",
+    "Queens",
+    "Staten_Island"
+  ]
+}

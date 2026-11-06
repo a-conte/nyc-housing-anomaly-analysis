@@ -1,0 +1,8 @@
+...............................                                          [100%]
+31 passed in 2.77s
+All checks passed!
+3 files already formatted
+
+Full-data rerun: model metrics exactly reproduced.
+All seven evaluation outputs: unique BuildingID, 2025 only, finite positive expected counts, O/E identities and totals verified.
+Code/report provenance hashes verified. Three figures visually inspected.

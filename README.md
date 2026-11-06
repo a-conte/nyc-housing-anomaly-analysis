@@ -128,3 +128,10 @@ Interpret observed versus expected activity and persistence. Keep 2025 as a pote
 if coverage supports it, and prioritize ranking stability over an elaborate validation framework.
 Simulation calibration and multiple-testing correction are optional, diagnostic-driven additions.
 Do not construct a subjective composite bad-landlord score or assume Isolation Forest is superior.
+
+## Phase 4 baselines
+
+[Exploration and model diagnostics](reports/phase4/README.md) compare Poisson and NB2
+baselines trained on 2021–2024 and evaluated retrospectively on 2025. Reproduce with
+`uv run python -m housing.phase4`. NB2 improves distributional fit but substantial mean
+miscalibration remains; no investigative rankings or formal anomaly thresholds were produced.

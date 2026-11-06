@@ -479,3 +479,10 @@ The strongest submission would deliver:
 **Building-level findings should be the principal result; owner-level conclusions should remain conditional on verified linkage and ownership timing.**
 
 The design is approved with the scope adjustments above. Phase 2 must confirm source coverage, date quality, join cardinality, unmatched records, and denominator disagreement before finalizing the cohort and study window. Owner enrichment must not block completion. Historical PLUTO enrichment and additional statistical complexity are optional, justified additions.
+
+## Phase 4 implementation outcome
+
+The [Phase 4 report](../reports/phase4/README.md) records retrospective 2025 evaluation,
+Poisson overdispersion, NB2 comparisons, and denominator/linkage/window sensitivities.
+Mean calibration, especially for large buildings, remains inadequate for formal anomaly
+thresholds. No final investigative rankings have been produced.
