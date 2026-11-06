@@ -135,3 +135,10 @@ Do not construct a subjective composite bad-landlord score or assume Isolation F
 baselines trained on 2021–2024 and evaluated retrospectively on 2025. Reproduce with
 `uv run python -m housing.phase4`. NB2 improves distributional fit but substantial mean
 miscalibration remains; no investigative rankings or formal anomaly thresholds were produced.
+
+## Phase 5 calibration validation
+
+[Phase 5 report](reports/phase5/README.md) selects a piecewise-size NB2 model using
+2023/2024 rolling validation, then evaluates the frozen choice on 2025. Run
+`uv run python -m housing.phase5`. Mean calibration improves, but historical-activity
+heterogeneity and temporal drift still preclude formal anomaly thresholds.

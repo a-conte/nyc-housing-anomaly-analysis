@@ -1,0 +1,40 @@
+{
+  "folds": [
+    {
+      "train": [
+        2021,
+        2022
+      ],
+      "validation": 2023
+    },
+    {
+      "train": [
+        2021,
+        2022,
+        2023
+      ],
+      "validation": 2024
+    }
+  ],
+  "models": [
+    "poisson",
+    "nb2",
+    "nb_size",
+    "nb_size_flat",
+    "poisson_size_nb_variance"
+  ],
+  "size_knots_apartments": [
+    10,
+    50
+  ],
+  "selection": "minimum mean across folds of absolute log aggregate O/E plus mean absolute log O/E in three size bands; tie break by validation negative log likelihood",
+  "final_fit": [
+    2021,
+    2022,
+    2023,
+    2024
+  ],
+  "final_evaluation": 2025,
+  "bootstrap_replicates": 300,
+  "bootstrap_seed": 501
+}

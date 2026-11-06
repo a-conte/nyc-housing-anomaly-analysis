@@ -486,3 +486,10 @@ The [Phase 4 report](../reports/phase4/README.md) records retrospective 2025 eva
 Poisson overdispersion, NB2 comparisons, and denominator/linkage/window sensitivities.
 Mean calibration, especially for large buildings, remains inadequate for formal anomaly
 thresholds. No final investigative rankings have been produced.
+
+## Phase 5 implementation outcome
+
+[Phase 5](../reports/phase5/README.md) tested three prespecified adjustments with only
+pre-2025 validation. Piecewise-size NB2 improved retrospective mean calibration;
+conditional uncertainty and historical-activity miscalibration remain explicit limitations.
+No investigative rankings or formal significance thresholds have been produced.

@@ -1,0 +1,8 @@
+...................................                                      [100%]
+35 passed in 2.56s
+All checks passed!
+3 files already formatted
+
+Frozen decision and validation hash verified; recomputed selection agrees.
+All three final output files: positive finite predictions, unique BuildingID, 2025-only rows, totals and O/E identities verified.
+Diagnostic figure visually inspected.

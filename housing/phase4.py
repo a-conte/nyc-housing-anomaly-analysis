@@ -73,11 +73,11 @@ def design(d):
     )
 
 
-def fit(d, family="poisson", denominator="selected_units"):
+def fit(d, family="poisson", denominator="selected_units", design_matrix=None):
     exposure = d[denominator].to_numpy(float)
     if not np.isfinite(exposure).all() or (exposure <= 0).any():
         raise ValueError("Invalid exposure denominator")
-    x = design(d)
+    x = design(d) if design_matrix is None else design_matrix
     y = d.hazardous.to_numpy(float)
     offset = np.log(exposure)
     p = sm.GLM(y, x, offset=offset, family=sm.families.Poisson()).fit(maxiter=100)
@@ -97,9 +97,10 @@ def fit(d, family="poisson", denominator="selected_units"):
     return result.params[:-1], float(result.params[-1])
 
 
-def score(d, beta, alpha, denominator="selected_units"):
+def score(d, beta, alpha, denominator="selected_units", design_matrix=None):
     y = d.hazardous.to_numpy(float)
-    mu = np.exp(design(d) @ beta) * d[denominator].to_numpy(float)
+    x = design(d) if design_matrix is None else design_matrix
+    mu = np.exp(x @ beta) * d[denominator].to_numpy(float)
     if not np.isfinite(mu).all() or (mu <= 0).any():
         raise ValueError("Invalid predictions")
     variance = mu + alpha * mu**2
