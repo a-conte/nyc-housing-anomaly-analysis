@@ -1,0 +1,6 @@
+unit_comparison,buildings,median_relative_difference,p10,p90
+agreement,97663,0.0,0.0,0.0
+disagreement,26605,0.045454545454545456,-0.25,0.6666666666666666
+missing_or_zero_pluto_units,614,,,
+no_pluto_match,270,,,
+not_one_building_to_one_lot,27209,,,

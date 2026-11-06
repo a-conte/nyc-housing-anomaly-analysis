@@ -10,8 +10,8 @@ anomaly is a lead for investigation, not a finding of misconduct.
 **Phase 2 completed November 5, 2026: snapshot verification, DuckDB loading, and data-quality auditing.**
 Read the [Phase 2 findings and unresolved decisions](reports/phase2/QUALITY_REVIEW.md) and
 [generated audit](reports/phase2/README.md). All 17 blocking integrity checks pass.
-The approved [analytical design](docs/analytical_design.md) sets the scope. Phase 3 has not started;
-cohort and denominator decisions remain open.
+The approved [analytical design](docs/analytical_design.md) sets the scope. Phase 3 is now complete; see the [cohort and feature report](reports/phase3/README.md).
+Rebuild it without downloading data using `python -m housing.phase3`. No models have been fitted.
 
 ## Reproduce Phase 2
 

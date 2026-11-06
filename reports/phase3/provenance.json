@@ -1,0 +1,6 @@
+{
+  "generated_at": "2026-11-06T18:51:07.093690+00:00",
+  "sql_sha256": "4a53c2c3a0f319409b4b8237958e6891fb82349f323f0b386852132baaddc648",
+  "phase2_provenance_sha256": "de70f58c6c9af44dc521f445f78166500dc53aff994541dbde2a54f3de87369b",
+  "duckdb_version": "1.5.6"
+}

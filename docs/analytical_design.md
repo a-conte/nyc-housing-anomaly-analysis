@@ -4,7 +4,8 @@
 
 **Status:** Approved with portfolio-scope adjustments; Phase 2 completed November 5, 2026.
 See the [data-quality review](../reports/phase2/QUALITY_REVIEW.md) for unresolved cohort and
-exposure decisions. Phase 3 has not started.
+exposure decisions. Phase 3 subsequently defined a current-stock cohort and SQL features;
+see [the Phase 3 report](../reports/phase3/README.md). Historical occupancy remains unverified.
 **Research date:** November 2, 2026.  
 **Intended use:** Portfolio-quality code sample for a Data Scientist position with the Research & Analytics Department of the New York State Attorney General.
 
